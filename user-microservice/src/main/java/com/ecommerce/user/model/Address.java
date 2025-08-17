@@ -1,21 +1,19 @@
 package com.ecommerce.user.model;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@Entity
-@Table(name = "addresses")
-public class Address {
+@NoArgsConstructor
+//@Entity
+//@Table(name = "addresses")
+public class Address {      //address doesnt need to be an entity now, it will be part of 'users' collection
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String street;
