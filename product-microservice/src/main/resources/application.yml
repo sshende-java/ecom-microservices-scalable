@@ -2,9 +2,10 @@ spring:
   application:
     name: product-microservice
   datasource:
-    url: jdbc:postgresql://localhost:5432/product
-    username: saurabh
-    password: root
+#    url: jdbc:postgresql://localhost:5432/product
+    url: jdbc:postgresql://ep-aged-credit-a1m6ppqh-pooler.ap-southeast-1.aws.neon.tech/product?sslmode=require&channel_binding=require
+    username: neondb_owner
+    password: npg_IPpAwSk0e4MK
   jpa:
     hibernate:
       ddl-auto: update
