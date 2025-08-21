@@ -2,12 +2,25 @@ spring:
   application:
     name: configserver
   profiles:
-    active: native    #because using file present on local system
+    active: native    #because usings file present on local system in configserver/src/main/resources/config
   cloud:
     config:
       server:
         native:
-          search-locations: classpath:/config
+          search-locations: file:///C:\MY FILES\E drive bkp\Advanced Boot\Microservices\ecom-microservices\configserver\src\main\resources\config
+  #RabbitMQ
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+#Actuator endpoints
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
 
 server:
   port: 8888

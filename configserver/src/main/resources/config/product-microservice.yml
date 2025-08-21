@@ -29,6 +29,12 @@ spring:
       hibernate:
         format_sql: true
 
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
 #  h2:
 #    console:
 #      enabled: true
@@ -46,11 +52,11 @@ server:
 #  level:
 #    root: info
 #
-#management:
-#  endpoints:
-#    web:
-#      exposure:
-#        include: "*"
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
 #  endpoint:
 #    health:
 #      show-details: always

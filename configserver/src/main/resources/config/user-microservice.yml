@@ -5,6 +5,12 @@ spring:
       database: userdb
       uri: ${MONGO_URI}
 
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
 #  PostgresDB config
 #  datasource:
 #    url: jdbc:postgresql://localhost:5432/userdb
@@ -35,11 +41,11 @@ server:
 #  level:
 #    root: info
 #
-#management:
-#  endpoints:
-#    web:
-#      exposure:
-#        include: "*"
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
 #  endpoint:
 #    health:
 #      show-details: always

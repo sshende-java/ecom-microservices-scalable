@@ -10,6 +10,11 @@ spring:
     show-sql: true
     database-platform: org.hibernate.dialect.PostgreSQLDialect
 
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
 
 #  h2:
 #    console:
@@ -28,11 +33,11 @@ server:
 #  level:
 #    root: info
 #
-#management:
-#  endpoints:
-#    web:
-#      exposure:
-#        include: "*"
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
 #  endpoint:
 #    health:
 #      show-details: always
