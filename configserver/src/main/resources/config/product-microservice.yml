@@ -75,3 +75,6 @@ management:
 #
 #server:
 #  shutdown: graceful
+
+app:
+  message: "product message"

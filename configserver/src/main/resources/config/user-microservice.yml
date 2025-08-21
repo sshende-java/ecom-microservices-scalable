@@ -64,3 +64,6 @@ management:
 #
 #server:
 #  shutdown: graceful
+
+app:
+  message: "user message"

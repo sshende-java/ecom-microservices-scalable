@@ -56,3 +56,6 @@ management:
 #
 #server:
 #  shutdown: graceful
+
+app:
+  message: "order message new"

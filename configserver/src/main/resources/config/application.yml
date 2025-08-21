@@ -1,0 +1,6 @@
+
+#This is shared configuration file by all microservices
+#prop mentioned here will be applicable for all
+app:
+  centralisedMessage: "centralised CONFIG"
+  message: "glas message"   #this wont be overriden bcoz priority is given to app level prop
