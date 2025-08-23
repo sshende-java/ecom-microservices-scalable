@@ -81,4 +81,8 @@ public class ProductService {
     public List<ProductResponseDTO> searchProduct(String keyword) {
         return productRepository.searchProduct(keyword).stream().map(this::mapProductToProductResponseDTO).toList();
     }
+
+    public Optional<ProductResponseDTO> getProductById(String id) {
+        return productRepository.findByIdAndActiveTrue(Long.valueOf(id)).map(this::mapProductToProductResponseDTO);
+    }
 }

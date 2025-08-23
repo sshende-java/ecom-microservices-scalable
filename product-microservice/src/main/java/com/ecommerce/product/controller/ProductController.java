@@ -42,6 +42,15 @@ public class ProductController {
         return ResponseEntity.ok(productService.getAllProducts());
     }
 
+
+    //will be used by order microservice
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductResponseDTO> getProductById(@PathVariable String id) {
+        return productService.getProductById(id).map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteProduct(@PathVariable Long id) {
         Boolean isDeleted = productService.deleteProduct(id);
