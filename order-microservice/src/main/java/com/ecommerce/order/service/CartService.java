@@ -1,7 +1,11 @@
 package com.ecommerce.order.service;
 
 
+import com.ecommerce.order.clients.ProductServiceClient;
+import com.ecommerce.order.clients.UserServiceClient;
 import com.ecommerce.order.dto.CartItemRequestDTO;
+import com.ecommerce.order.dto.ProductResponseDTO;
+import com.ecommerce.order.dto.UserResponse;
 import com.ecommerce.order.model.CartItem;
 import com.ecommerce.order.repository.CartItemRepository;
 import jakarta.transaction.Transactional;
@@ -17,32 +21,34 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class CartService {
 
-//    private final ProductRepository productRepository;
+
     private final CartItemRepository cartItemRepository;
-//    private final UserRepository userRepository;
+    private final ProductServiceClient productServiceClient;
+    private final UserServiceClient userServiceClient;
+
 
     public boolean addToCart(String userId, CartItemRequestDTO request) {
 
-//        Optional<User> userOptional = userRepository.findById(Long.valueOf(userId));
-//        //If user not found
-//        if (userOptional.isEmpty()) {
-//            return false;
-//        }
-//
-//        Optional<Product> productOptional = productRepository.findById(request.getProductId());
-//        //If prod not found
-//        if (productOptional.isEmpty()) {
-//            return false;
-//        }
-//
-//        Product product = productOptional.get();
-//        //if insufficient quantity
-//        if (product.getStockQuantity() < request.getQuantity()) {
-//            return false;
-//        }
-//
-//        User user = userOptional.get();
+        //Validate User
+        UserResponse userApiResponse = userServiceClient.getUserById(userId);
+        //If user not found
+        if (userApiResponse == null) {
+            return false;
+        }
 
+        //Look for Product
+        ProductResponseDTO productApiResponse = productServiceClient.getProductById(request.getProductId());
+        //If prod not found
+        if (productApiResponse == null) {
+            return false;
+        }
+
+        //if insufficient quantity return
+        if (productApiResponse.getStockQuantity() < request.getQuantity()) {
+            return false;
+        }
+
+        //Add to cart
         CartItem existingCartItem = cartItemRepository.findByUserIdAndProductId(userId, request.getProductId());
         if (existingCartItem != null) {
             //If cart already exists Update the cart with quantity and price
@@ -80,9 +86,9 @@ public class CartService {
 //
 //        Product product = productOptional.get();
 //        User user = userOptional.get();
-        CartItem cartItem = cartItemRepository.findByUserIdAndProductId(userId,productId);
+        CartItem cartItem = cartItemRepository.findByUserIdAndProductId(userId, productId);
 
-        if(cartItem!=null){
+        if (cartItem != null) {
             cartItemRepository.delete(cartItem);
             return true;
         }
