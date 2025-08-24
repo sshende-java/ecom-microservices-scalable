@@ -78,3 +78,15 @@ management:
 
 app:
   message: "product message"
+
+#logging configuration
+logging:
+  level:
+    root: INFO
+    com.ecommerce.user: TRACE
+  file:
+    name: logs/${spring.application.name}.log
+  logback:
+    rollingpolicy:
+      max-file-size: 5MB
+      max-history: 7
