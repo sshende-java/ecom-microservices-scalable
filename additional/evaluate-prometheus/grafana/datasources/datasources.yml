@@ -1,0 +1,19 @@
+#This file tells grafana where to fetch data from i.e its datasource. for logging its loki and for metrics its prometheus
+#prometheus collects metrics to monitor app health
+#Loki Collects and indexes logs(LOGGING only) to help you troubleshoot what your app is saying
+
+apiVersion: 1
+datasources:
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+    url: http://prometheus:9090
+    isDefault: true
+  - name: Loki
+    type: loki
+    access: proxy
+    url: http://gateway:3100
+    jsonData:
+      httpHeaderName1: "X-Scope-OrgID"
+    secureJsonData:
+      httpHeaderValue1: "tenant1"

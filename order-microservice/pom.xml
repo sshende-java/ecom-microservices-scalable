@@ -63,6 +63,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
+        <!-- Micrometer acts as a bridge between actuator and prometheus -->
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+            <scope>runtime</scope>
+        </dependency>
         <!-- Spring Cloud Bus propagates configuration changes and events across microservices using a message broker,
                 while RabbitMQ is the messaging system that actually transports those messages between services. -->
         <dependency>

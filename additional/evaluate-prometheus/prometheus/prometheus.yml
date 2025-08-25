@@ -1,0 +1,25 @@
+#This is a config file for prometheus which defines how prometheus creates or collects metrics from different services
+#It tells prometheus where to collect metrics from...(it will do it using actuator)
+
+scrape_configs:
+  - job_name: 'product-microservice'
+    metrics_path: '/actuator/prometheus'
+    scrape_interval: 3s
+    static_configs:
+      - targets: ['host.docker.internal:8081']
+        labels:
+          application: 'product-microservice'
+  - job_name: 'user-microservice'
+    metrics_path: '/actuator/prometheus'
+    scrape_interval: 3s
+    static_configs:
+      - targets: ['host.docker.internal:8082']
+        labels:
+          application: 'user-microservice'
+  - job_name: 'order-microservice'
+    metrics_path: '/actuator/prometheus'
+    scrape_interval: 3s
+    static_configs:
+      - targets: ['host.docker.internal:8083']
+        labels:
+          application: 'order-microservice'
