@@ -1,7 +1,7 @@
 ---
 networks:
   loki:
-#These all 8 services for implementing a centralized logging SYSTEM using grafana stack
+#These all 8 services for implementing a centralized logging SYSTEM using grafana stack included zipkin to use with grafana
 services:
   read:
     image: grafana/loki:latest
@@ -220,3 +220,13 @@ services:
     command: -f json -d 200ms -l
     networks:
       - loki
+
+  #zipkin service for distributed tracing
+  zipkin:
+    container_name: zipkin
+    image: openzipkin/zipkin
+    ports:
+      - 9411:9411
+    networks:
+      - loki
+    restart: unless-stopped

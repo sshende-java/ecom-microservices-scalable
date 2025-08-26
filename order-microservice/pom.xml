@@ -69,6 +69,17 @@
             <artifactId>micrometer-registry-prometheus</artifactId>
             <scope>runtime</scope>
         </dependency>
+        <!-- For Distributed tracing using Zipkin-->
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-tracing-bridge-brave</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.zipkin.reporter2</groupId>
+            <artifactId>zipkin-reporter-brave</artifactId>
+        </dependency>
+        <!-- End Zipkin-->
+
         <!-- Spring Cloud Bus propagates configuration changes and events across microservices using a message broker,
                 while RabbitMQ is the messaging system that actually transports those messages between services. -->
         <dependency>
