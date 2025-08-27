@@ -5,15 +5,15 @@ spring:
     gateway:
       routes:
         - id: product-microservice
-          uri: http://localhost:8081
+          uri: lb://PRODUCT-MICROSERVICE  #instead of localhost use [service discovery]
           predicates:
             - Path=/api/products/**
         - id: user-microservice
-          uri: http://localhost:8082
+          uri: lb://USER-MICROSERVICE   #instead of localhost use [service discovery] to locate microservice (u can have multiple instance on 8081,8082,..)
           predicates:
             - Path=/api/users/**
         - id: order-microservice
-          uri: http://localhost:8083
+          uri: lb://ORDER-MICROSERVICE  #instead of localhost use [service discovery]
           predicates:
             - Path=/api/orders/**, /api/cart/**,
 
