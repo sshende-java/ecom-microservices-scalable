@@ -8,6 +8,7 @@ import com.ecommerce.order.dto.ProductResponseDTO;
 import com.ecommerce.order.dto.UserResponse;
 import com.ecommerce.order.model.CartItem;
 import com.ecommerce.order.repository.CartItemRepository;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,7 +27,8 @@ public class CartService {
     private final ProductServiceClient productServiceClient;
     private final UserServiceClient userServiceClient;
 
-
+    //productServiceCircuitBreaker -> this circuitbreaker instance defined in order-microservice.yml
+    @CircuitBreaker(name = "productServiceCircuitBreaker", fallbackMethod = "addToCartFallback")
     public boolean addToCart(String userId, CartItemRequestDTO request) {
 
         //Validate User
@@ -108,5 +110,11 @@ public class CartService {
 //            cartItemRepository.deleteByUser(userOptional.get());
 //        }
         cartItemRepository.deleteByUserId(userId);
+    }
+
+    //fallback for addToCart
+    public boolean addToCartFallback(String userId, CartItemRequestDTO request, Exception e) {
+        e.printStackTrace();
+        return false;       //fallback method called so we need to return false as controller is expecting failure
     }
 }
