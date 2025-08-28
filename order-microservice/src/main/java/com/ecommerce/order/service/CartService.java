@@ -32,6 +32,7 @@ public class CartService {
 
     //here we are using both retry and circuitbreaker , so if circuit is open; retry wont work.
     //By default, @Retry will retry on exceptions that are subclasses of Throwable
+    //@Retry doesn’t work if the service is down but no exception is thrown** (for example, if the underlying service returns an HTTP 503
 
     @CircuitBreaker(name = "productServiceCircuitBreaker", fallbackMethod = "addToCartFallback")
     @Retry(name = "retryBreaker", fallbackMethod = "addToCartFallback")
