@@ -9,6 +9,7 @@ import com.ecommerce.order.dto.UserResponse;
 import com.ecommerce.order.model.CartItem;
 import com.ecommerce.order.repository.CartItemRepository;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,7 +29,12 @@ public class CartService {
     private final UserServiceClient userServiceClient;
 
     //productServiceCircuitBreaker -> this circuitbreaker instance defined in order-microservice.yml
+
+    //here we are using both retry and circuitbreaker , so if circuit is open; retry wont work.
+    //By default, @Retry will retry on exceptions that are subclasses of Throwable
+
     @CircuitBreaker(name = "productServiceCircuitBreaker", fallbackMethod = "addToCartFallback")
+    @Retry(name = "retryBreaker", fallbackMethod = "addToCartFallback")
     public boolean addToCart(String userId, CartItemRequestDTO request) {
 
         //Validate User

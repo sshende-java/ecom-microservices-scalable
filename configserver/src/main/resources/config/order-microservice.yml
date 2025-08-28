@@ -99,3 +99,8 @@ resilience4j:
         failureRateThreshold: 50      #If 50% or more of the calls in the current sliding window fail, the circuit breaker opens
         automaticTransitionFromOpenToHalfOpenEnabled: true
         slidingWindowType: count_based
+  retry:
+    instances:
+      retryBreaker:
+        maxAttempts: 4
+        waitDuration: 5s
