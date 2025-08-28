@@ -12,7 +12,10 @@ public class GatewayConfig {
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         return builder.routes()
-                .route("product-microservice", r -> r.path("/api/products/**").uri("lb://PRODUCT-MICROSERVICE"))
+                .route("product-microservice", r -> r.path("/api/products/**")
+                        .filters(f->f.circuitBreaker(config -> config.setName("ecomCircuitBreaker")
+                                                    .setFallbackUri("forward:/fallback/products")))
+                        .uri("lb://PRODUCT-MICROSERVICE"))
                 .route("user-microservice", r -> r.path("/api/users/**").uri("lb://USER-MICROSERVICE"))
                 .route("order-microservice", r -> r.path("/api/orders/**", "/api/cart/**").uri("lb://ORDER-MICROSERVICE"))
                 .route("eureka-server", r -> r.path("/eureka/main")

@@ -31,6 +31,12 @@ management:
     web:
       exposure:
         include: "*"
+  endpoint:
+    health:
+      show-details: always    #Controls the level of detail shown in the /actuator/health endpoint
+  health:
+    circuitbreakers:
+      enabled: true           #Adds circuit breaker status to /actuator/health.
   tracing:
     sampling:
       probability: 1.0
@@ -40,3 +46,17 @@ management:
 
 server:
   port: 8080
+
+#Circuit Breaker config
+resilience4j:
+  circuitbreaker:
+    instances:
+      ecomCircuitBreaker:
+        registerHealthIndicator: true
+        slidingWindowSize: 10         #Use last 10 calls to calculate the failure rate
+        minimumNumberOfCalls: 5
+        permittedNumberOfCallsInHalfOpenState: 3
+        waitDurationInOpenState: 10s
+        failureRateThreshold: 50      #If 50% or more of the calls in the current sliding window fail, the circuit breaker opens
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        slidingWindowType: count_based
