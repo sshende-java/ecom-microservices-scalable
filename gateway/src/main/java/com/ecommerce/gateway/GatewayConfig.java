@@ -14,7 +14,8 @@ public class GatewayConfig {
         return builder.routes()
                 .route("product-microservice", r -> r.path("/api/products/**")
                         .filters(f->f.circuitBreaker(config -> config.setName("ecomCircuitBreaker")
-                                                    .setFallbackUri("forward:/fallback/products")))
+                                                    .setFallbackUri("forward:/fallback/products")
+                                                    ).retry(retryConfig -> retryConfig.setRetries(5)))  //f->f.circuitBreaker().retry()     like this
                         .uri("lb://PRODUCT-MICROSERVICE"))
                 .route("user-microservice", r -> r.path("/api/users/**").uri("lb://USER-MICROSERVICE"))
                 .route("order-microservice", r -> r.path("/api/orders/**", "/api/cart/**").uri("lb://ORDER-MICROSERVICE"))
