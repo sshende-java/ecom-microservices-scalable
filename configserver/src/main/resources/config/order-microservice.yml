@@ -104,3 +104,9 @@ resilience4j:
       retryBreaker:
         maxAttempts: 4
         waitDuration: 5s
+  ratelimiter:
+    instances:
+      ratelimiterInstance1:
+        timeout-duration: 0       #wait time a thread waits for a permission
+        limit-refresh-period: 4s  #limit will be refreshed per 4 seconds
+        limit-for-period: 2       #2 request allowed per period (here per 4 seconds)
