@@ -10,10 +10,13 @@ import com.ecommerce.order.model.OrderStatus;
 import com.ecommerce.order.repository.OrderRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -25,6 +28,9 @@ public class OrderService {
 
 
     private final OrderRepository orderRepository;
+
+    @Qualifier("myCustomRabbitTemplate")
+    private final RabbitTemplate rabbitTemplate;
 
     @Transactional
     public Optional<OrderResponseDTO> createOrder(String userId) {
@@ -67,6 +73,10 @@ public class OrderService {
         //clear cart
         cartService.clearCart(userId);
 
+        //Publish to RabbitMQ       rabbitTemplate.convertAndSend(exchange,routing-key,Object);
+        rabbitTemplate.convertAndSend("order.exchange", "order.tracking",
+                Map.of("orderId", savedOrder.getId(), "status", "CREATED"));
+
         return Optional.of(mapOrderToOrderResponseDTO(savedOrder));
     }
 
@@ -75,7 +85,7 @@ public class OrderService {
                 savedOrder.getId(),
                 savedOrder.getTotalAmount(),
                 savedOrder.getStatus(),
-                savedOrder.getItems().stream().map(item -> new OrderItemDTO(item.getId(),item.getProductId(),item.getQuantity(),item.getPrice())).toList(),
+                savedOrder.getItems().stream().map(item -> new OrderItemDTO(item.getId(), item.getProductId(), item.getQuantity(), item.getPrice())).toList(),
                 savedOrder.getCreatedAt()
         );
     }
