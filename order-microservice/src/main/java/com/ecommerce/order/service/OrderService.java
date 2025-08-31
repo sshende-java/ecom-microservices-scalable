@@ -1,6 +1,7 @@
 package com.ecommerce.order.service;
 
 
+import com.ecommerce.order.dto.OrderCreatedEvent;
 import com.ecommerce.order.dto.OrderItemDTO;
 import com.ecommerce.order.dto.OrderResponseDTO;
 import com.ecommerce.order.model.CartItem;
@@ -74,8 +75,15 @@ public class OrderService {
         cartService.clearCart(userId);
 
         //Publish to RabbitMQ       rabbitTemplate.convertAndSend(exchange,routing-key,Object);
-        rabbitTemplate.convertAndSend("order.exchange", "order.tracking",
-                Map.of("orderId", savedOrder.getId(), "status", "CREATED"));
+        OrderCreatedEvent orderCreatedEvent = new OrderCreatedEvent(savedOrder.getId(),
+                                            savedOrder.getUserId(),
+                                            savedOrder.getStatus(),
+                                            savedOrder.getTotalAmount(),
+                                            savedOrder.getItems().stream().map(item -> new OrderItemDTO(item.getId(), item.getProductId(), item.getQuantity(), item.getPrice())).toList(),
+                                            savedOrder.getCreatedAt()
+                                            );
+
+        rabbitTemplate.convertAndSend("order.exchange", "order.tracking",orderCreatedEvent);
 
         return Optional.of(mapOrderToOrderResponseDTO(savedOrder));
     }
