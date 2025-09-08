@@ -60,3 +60,18 @@ resilience4j:
         failureRateThreshold: 50      #If 50% or more of the calls in the current sliding window fail, the circuit breaker opens
         automaticTransitionFromOpenToHalfOpenEnabled: true
         slidingWindowType: count_based
+
+#logging:
+#  level:
+#    org:
+#      springframework:
+#        security: DEBUG
+#        web: DEBUG
+
+#Security KeyCloak
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8443/realms/ecom-app   #base URL of your identity provider (like Keycloak,Okta)

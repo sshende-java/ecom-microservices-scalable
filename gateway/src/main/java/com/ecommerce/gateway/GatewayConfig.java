@@ -38,7 +38,7 @@ public class GatewayConfig {
                          .requestRateLimiter(rl-> rl.setRateLimiter(redisRateLimiter()).setKeyResolver(hostNameKeyResolver()))
                         )  //f->f.circuitBreaker().retry().requestRateLimiter()    like this
                         .uri("lb://PRODUCT-MICROSERVICE"))
-                .route("user-microservice", r -> r.path("/api/users/**").uri("lb://USER-MICROSERVICE"))
+                .route("user-microservice", r -> r.path("/api/users/**","/message/**").uri("lb://USER-MICROSERVICE"))
                 .route("order-microservice", r -> r.path("/api/orders/**", "/api/cart/**").uri("lb://ORDER-MICROSERVICE"))
                 .route("eureka-server", r -> r.path("/eureka/main")
                         .filters(f -> f.rewritePath("/eureka/main", "/")).uri("http://localhost:8761"))
