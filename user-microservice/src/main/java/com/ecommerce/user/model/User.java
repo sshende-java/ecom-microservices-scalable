@@ -22,7 +22,8 @@ public class User {
 
     @Id
     private String id;      //mongodb doesnt support long datatype
-
+    //creating link between our user in system & keycloak user
+    private String keyCloakId;
     private String firstName;
     private String lastName;
 

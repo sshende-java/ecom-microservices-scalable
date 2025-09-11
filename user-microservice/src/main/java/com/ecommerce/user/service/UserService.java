@@ -7,6 +7,7 @@ import com.ecommerce.user.dto.UserResponse;
 import com.ecommerce.user.model.Address;
 import com.ecommerce.user.model.User;
 import com.ecommerce.user.repository.UserRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +20,7 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final UserRepository userRepository;
-
+    private final KeyCloakAdminService keyCloakAdminService;
 
     public List<UserResponse> fetchAllUsers() {
         return userRepository.findAll().stream()
@@ -27,8 +28,15 @@ public class UserService {
     }
 
     public void addUser(UserRequest userRequest) {
+
+        //Create user in Keycloak
+        String accessToken = keyCloakAdminService.getAdminAccessToken();
+        String keyCloakId = keyCloakAdminService.createUser(accessToken, userRequest);
+
+        //Create user in db as well
         User user = new User();
-        mapUserToUserRequest(user,userRequest);
+        mapUserToUserRequest(user, userRequest);
+        user.setKeyCloakId(keyCloakId);     //attach keycloakId to user
         userRepository.save(user);
     }
 

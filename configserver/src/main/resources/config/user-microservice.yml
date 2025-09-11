@@ -1,7 +1,7 @@
 spring:
   data:
     mongodb:
-#      uri: mongodb+srv://saurabhshende25:7LqtV68Jqy1BFZmT@cluster0.crkq6gc.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
+      #      uri: mongodb+srv://saurabhshende25:7LqtV68Jqy1BFZmT@cluster0.crkq6gc.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
       database: userdb
       uri: ${MONGO_URI}
 
@@ -86,3 +86,13 @@ logging:
     rollingpolicy:
       max-file-size: 5MB
       max-history: 7
+
+
+#KeyCloak config
+keycloak:
+  admin:
+    username: user
+    password: user
+    server-url: http://localhost:8443
+    realm: ecom-app
+    client-id: admin-cli

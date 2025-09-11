@@ -7,8 +7,10 @@ import lombok.Data;
 @Builder
 public class UserRequest {
     private String id;
+    private String username;
     private String firstName;
     private String lastName;
+    private String password;
     private String email;
     private String phone;
     private AddressDTO address;
