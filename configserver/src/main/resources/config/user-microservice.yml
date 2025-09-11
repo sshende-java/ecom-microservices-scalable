@@ -96,3 +96,4 @@ keycloak:
     server-url: http://localhost:8443
     realm: ecom-app
     client-id: admin-cli
+    client-uid: 50b9df5f-36f0-430f-b1ce-858c0b9c6990  #This is clientUid of oauth2-pkce(client-id)

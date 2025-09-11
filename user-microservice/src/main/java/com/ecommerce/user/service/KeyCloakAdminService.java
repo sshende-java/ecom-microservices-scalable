@@ -33,6 +33,9 @@ public class KeyCloakAdminService {
     @Value("${keycloak.admin.client-id}")
     private String clientId;
 
+    @Value("${keycloak.admin.client-uid}")
+    private String clientUid;
+
     private final RestTemplate restTemplate = new RestTemplate();
 
 
@@ -128,4 +131,35 @@ public class KeyCloakAdminService {
         String path = location.getPath();
         return path.substring(path.lastIndexOf("/") + 1);
     }
+
+    private Map<String, Object> getClientLevelRoleRepresentation(String token, String roleName) {
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(token);
+
+        HttpEntity<Void> request = new HttpEntity<>(headers);
+        String url = keycloakServerUrl + "/admin/realms/" + realm + "/clients/" + clientUid + "/roles/" + roleName;
+
+        ResponseEntity<Map> response = restTemplate.exchange(url, HttpMethod.GET, request, Map.class);
+        return response.getBody();
+
+    }
+
+    public void assignClientLevelRoleToUser(String username, String roleName, String keyCloakId) {
+        String token = getAdminAccessToken();
+        Map<String, Object> roleRep = getClientLevelRoleRepresentation(token, roleName);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setBearerAuth(token);
+
+        HttpEntity<List<Map<String, Object>>> entity = new HttpEntity<>(List.of(roleRep), headers);
+        String url = keycloakServerUrl + "/admin/realms/" + realm + "/users/" + keyCloakId + "/role-mappings/clients/" + clientUid;
+
+        ResponseEntity<Void> response = restTemplate.postForEntity(url, entity, Void.class);
+        if (!response.getStatusCode().is2xxSuccessful()) {
+            throw new RuntimeException("Failed to assign role to user " + username+ ": Http "+response.getStatusCode());
+        }
+    }
+
 }

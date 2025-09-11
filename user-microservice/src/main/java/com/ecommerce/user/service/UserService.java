@@ -37,6 +37,9 @@ public class UserService {
         User user = new User();
         mapUserToUserRequest(user, userRequest);
         user.setKeyCloakId(keyCloakId);     //attach keycloakId to user
+
+        //Assign role to User
+        keyCloakAdminService.assignClientLevelRoleToUser(userRequest.getUsername(), "USER", keyCloakId);
         userRepository.save(user);
     }
 
