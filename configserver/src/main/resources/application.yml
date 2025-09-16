@@ -1,21 +1,55 @@
+#Non Docker Configuration
+#spring:
+#  application:
+#    name: configserver
+#  profiles:
+#    active: native    #because usings file present on local system in configserver/src/main/resources/config
+#  cloud:
+#    config:
+#      server:
+#        native:
+#          search-locations: file:///C:\MY FILES\E drive bkp\Advanced Boot\Microservices\ecom-microservices\configserver\src\main\resources\config
+#  #RabbitMQ
+#  rabbitmq:
+#    host: ${RABBITMQ_HOST:localhost}
+#    port: ${RABBITMQ_PORT:5672}
+#    username: ${RABBITMQ_USERNAME:guest}
+#    password: ${RABBITMQ_PASSWORD:guest}
+#
+##Actuator endpoints
+#management:
+#  endpoints:
+#    web:
+#      exposure:
+#        include: "*"
+#
+#server:
+#  port: 8888
+
+
+
+
+
+#Docker Container CONFIGURATION -
 spring:
   application:
     name: configserver
+
   profiles:
-    active: native    #because usings file present on local system in configserver/src/main/resources/config
+    active: native # Activating 'native' profile to read config from local classpath
+
   cloud:
     config:
       server:
         native:
-          search-locations: file:///C:\MY FILES\E drive bkp\Advanced Boot\Microservices\ecom-microservices\configserver\src\main\resources\config
-  #RabbitMQ
-  rabbitmq:
-    host: localhost
-    port: 5672
-    username: guest
-    password: guest
+          search-locations: classpath:/config   # Only DIFFERENCE!! for DOCKER Looks for config files inside src/main/resources/config
 
-#Actuator endpoints
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
+
 management:
   endpoints:
     web:
@@ -24,3 +58,5 @@ management:
 
 server:
   port: 8888
+
+isConfig: docker
