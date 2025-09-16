@@ -1,0 +1,129 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://postgres:5432/orderdb
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database: POSTGRESQL
+    show-sql: true
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
+
+rabbitmq:
+  exchange:
+    name: order.exchange
+  queue:
+    name: order.queue
+  routing:
+    key: order.tracking
+
+#  h2:
+#    console:
+#      enabled: true
+#  datasource:
+#    url: jdbc:h2:mem:test
+#  jpa:
+#    show-sql: true
+#    hibernate:
+#      ddl-auto: create
+
+server:
+  port: 8083
+
+#logging:
+#  level:
+#    root: info
+#
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always    #Controls the level of detail shown in the /actuator/health endpoint
+  health:
+    circuitbreakers:
+      enabled: true           #Adds circuit breaker status to /actuator/health.
+  tracing:
+    sampling:
+      probability: 1.0
+  zipkin:
+    tracing:
+      endpoint: http://zipkin:9411/api/v2/spans
+
+#  endpoint:
+#    health:
+#      show-details: always
+#    shutdown:
+#      enabled: true
+#  info:
+#    env:
+#      enabled: true
+#
+#info:
+#  app:
+#    name: MyNewApp
+#    description: App built by Saurabh
+#    version: "1.0."
+#    yahoo_junk: true
+#
+#server:
+#  shutdown: graceful
+
+app:
+  message: "order message new"
+
+#logging configuration
+logging:
+  level:
+    root: INFO
+    com.ecommerce.user: TRACE
+  file:
+    name: logs/${spring.application.name}.log
+  logback:
+    rollingpolicy:
+      max-file-size: 5MB
+      max-history: 7
+
+
+#Circuit Breaker config
+resilience4j:
+  circuitbreaker:
+    instances:
+      productServiceCircuitBreaker:
+        registerHealthIndicator: true
+        slidingWindowSize: 10         #Use last 10 calls to calculate the failure rate
+        minimumNumberOfCalls: 5
+        permittedNumberOfCallsInHalfOpenState: 3
+        waitDurationInOpenState: 10s
+        failureRateThreshold: 50      #If 50% or more of the calls in the current sliding window fail, the circuit breaker opens
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        slidingWindowType: count_based
+  retry:
+    instances:
+      retryBreaker:
+        maxAttempts: 4
+        waitDuration: 5s
+  ratelimiter:
+    instances:
+      ratelimiterInstance1:
+        timeout-duration: 0       #wait time a thread waits for a permission
+        limit-refresh-period: 4s  #limit will be refreshed per 4 seconds
+        limit-for-period: 2       #2 request allowed per period (here per 4 seconds)
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://eureka:8761/eureka/
+  instance:
+    prefer-ip-address: true     #Fix for @LoadBalanced with WebClient DNS issue

@@ -1,0 +1,86 @@
+#spring:
+#  cloud:
+#    gateway:
+#      routes:
+#        - id: product-microservice
+#          uri: lb://PRODUCT-MICROSERVICE  #instead of localhost use [service discovery]
+#          predicates:
+#            - Path=/api/products/**
+#        - id: user-microservice
+#          uri: lb://USER-MICROSERVICE   #instead of localhost use [service discovery] to locate microservice (u can have multiple instance on 8081,8082,..)
+#          predicates:
+#            - Path=/api/users/**
+#        - id: order-microservice
+#          uri: lb://ORDER-MICROSERVICE  #instead of localhost use [service discovery]
+#          predicates:
+#            - Path=/api/orders/**, /api/cart/**,
+#        - id: eureka-server
+#          uri: http://localhost:8761
+#          predicates:
+#            - Path=/eureka/main
+#          filters:
+#            - SetPath=/     #It means when a client requests /eureka/main, the Gateway changes it to / before forwarding it to http://localhost:8761.
+#        - id: eureka-server-static
+#          uri: http://localhost:8761
+#          predicates:
+#            - Path=/eureka/**     #this is for static contents like CSS styling of eureka server
+
+#For Zipkin tracing
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always    #Controls the level of detail shown in the /actuator/health endpoint
+  health:
+    circuitbreakers:
+      enabled: true           #Adds circuit breaker status to /actuator/health.
+  tracing:
+    sampling:
+      probability: 1.0
+  zipkin:
+    tracing:
+      endpoint: http://zipkin:9411/api/v2/spans
+
+server:
+  port: 8080
+
+#Circuit Breaker config
+resilience4j:
+  circuitbreaker:
+    instances:
+      ecomCircuitBreaker:
+        registerHealthIndicator: true
+        slidingWindowSize: 10         #Use last 10 calls to calculate the failure rate
+        minimumNumberOfCalls: 5
+        permittedNumberOfCallsInHalfOpenState: 3
+        waitDurationInOpenState: 10s
+        failureRateThreshold: 50      #If 50% or more of the calls in the current sliding window fail, the circuit breaker opens
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        slidingWindowType: count_based
+
+#logging:
+#  level:
+#    org:
+#      springframework:
+#        security: DEBUG
+#        web: DEBUG
+
+#Security KeyCloak
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8443/realms/ecom-app   #base URL of your identity provider (like Keycloak,Okta)
+          jwk-set-uri: http://keycloak:8080/realms/ecom-app/protocol/openid-connect/certs
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://eureka:8761/eureka/
+  instance:
+    prefer-ip-address: true     #Fix for @LoadBalanced with WebClient DNS issue
